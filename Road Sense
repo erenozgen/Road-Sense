@@ -1,0 +1,65 @@
+# RoadSense: Otonom Çukur ve Tümsek Haritalama Aracı
+
+Modern karayolu altyapılarında sıkça karşılaşılan yol bozukluklarının tespit ve raporlanma süreçlerine otonom, düşük maliyetli ve yüksek verimli bir IoT çözümü.
+
+---
+
+## 📌 Proje Özeti
+RoadSense, araç seyir halindeyken yol yüzeyinden elde ettiği dikey yönlü (Z ekseni) ham ivme verilerini gelişmiş filtreleme algoritmalarından geçirerek "çukur" veya "tümsek" olarak sınıflandıran akıllı bir sistemdir. Tespit edilen fiziksel anomaliler, anlık hassas GPS koordinatları ve dijital zaman damgasıyla eşleştirilerek hem yerel olarak depolanır hem de eşzamanlı olarak harita üzerinde görselleştirilir.
+
+---
+
+## 🛠️ Donanım Mimarisi ve Bağlantı Şeması
+Sistemin donanım altyapısı internet bağlantısından tamamen bağımsız (offline) çalışabilecek şekilde modüler olarak tasarlanmıştır:
+
+* **Ana Kontrolcü:** ESP32 Mikrodenetleyici
+* **Sarsıntı Analizi:** MPU6050 İvmeölçer Sensörü (I2C Protokolü)
+* **Coğrafi Etiketleme (Hassas Konum):** Gy-NEO6MV2 GPS Modülü (UART2)
+* **Çevrimdışı Depolama:** Mikro SD Kart Modülü (SPI Hattı)
+
+### Donanım Görselleri
+> ⚠️ *[Buraya 'Şekil 1: Aracın donanım mimarisi' fotoğrafını ekleyebilirsiniz]*
+
+> ⚠️ *[Buraya 'Şekil 2: Sensör bağlantı şeması' görselini ekleyebilirsiniz]*
+
+---
+
+## 💻 Yazılım ve Tespit Algoritması
+Gömülü yazılım, **Arduino IDE** ortamında **C/C++** dili kullanılarak geliştirilmiştir.
+
+* **Düşük Geçiren Filtre (Low Pass Filter):** Sensörden alınan ham Z ekseni ivme verileri, motorların yarattığı mekanik titreşimlerden arındırılmak amacıyla yazılımsal bir Low Pass Filter algoritmasından geçirilir.
+* **Anomali Sınıflandırma:** Filtrelenen temiz veriler ışığında, önceden belirlenmiş eşik değerini aşan sarsıntılar yön ve şiddet analizine tabi tutularak "çukur" veya "tümsek" olarak ayrıştırılır.
+* **Sürücü İkazı:** Eşzamanlı olarak LED ve buzzer aracılığıyla sürücüye anlık fiziksel ikaz verilir.
+
+---
+
+## 🌐 Canlı Web Arayüzü ve Canlı Takip
+Projenin en yenilikçi yönlerinden biri, uzak kırsal alanlar gibi internet bağlantısının bulunmadığı zorlu sahalarda dahi kesintisiz çalışabilmesidir:
+
+* ESP32 üzerinde yerel bir **Wi-Fi sunucusu** ayağa kaldırılmıştır.
+* **Leaflet.js** kütüphanesi yardımıyla oluşturulan interaktif web arayüzü sayesinde, operatörler veri kaybı yaşamadan canlı haritalama ve anlık görselleştirme yapabilmektedir.
+
+> ⚠️ *[Buraya 'Şekil 3: Web arayüzü ekran görüntüsü' görselini ekleyebilirsiniz]*
+
+---
+
+## 🚀 Katma Değer & Gelecek Geliştirmeler
+* **Yenilikçi Yön:** Yüksek maliyetli profesyonel yol analiz araçlarına kıyasla son derece düşük donanım maliyeti. Motorların yarattığı elektromanyetik paraziti (EMI) önlemek için PWM kısıtlaması yerine %100 güç ve arka tekerlek itişi (RWD) tercih edilerek GPS hassasiyeti korunmuştur.
+* **Gelişim Alanı:** Prototip aşamasında DC motorların ilk hareket anındaki anlık yüksek akım talebi nedeniyle yaşanan voltaj düşümü (brownout) problemini çözmek adına güç altyapısı 18650 Lityum-İyon pillerle güncellenecektir.
+
+---
+
+## 👥 Proje Ekibi
+* Emin Burak Öztürk
+* Eren Özgen
+* İsmail Ali Aslan
+* **Danışman:** Öğr. Gör. Ali Erfidan
+* **Kurum:** Balıkesir Üniversitesi - Yapay Zeka Operatörlüğü
+
+---
+
+## 📚 Referanslar
+1. Espressif Systems, (2023) ESP32 Series Datasheet Rev. 4.2.
+2. InvenSense (TDK), (2013) MPU-6000 and MPU-6050 Product Specification Rev. 3.4.
+3. u-blox AG, (2011) NEO-6 u-blox 6 GPS Modules Data Sheet.
+4. Mikal Hart, TinyGPS++ Kütüphanesi v1.0.3.
